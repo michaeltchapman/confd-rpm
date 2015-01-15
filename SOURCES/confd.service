@@ -1,0 +1,12 @@
+[Unit]
+Description=Manage local application configuration files using templates and data from etcd or consul
+Documentation=http://www.confd.io/
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/confd
+ExecStart=/usr/bin/confd $CMD_OPTS
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
