@@ -1,5 +1,5 @@
 Name:           confd
-Version:        0.7.1
+Version:        0.16.0
 Release:        1%{?dist}
 Summary:        Manage local application configuration files using templates and data from etcd or consul
 
@@ -21,16 +21,18 @@ Requires:       systemd
 Manage local application configuration files using templates and data from etcd or consul
 
 %prep
+mkdir -p %{buildroot}
 cd %{buildroot}
 rm -rf 'confd-%{version}'
 /usr/bin/mkdir -p confd-%{version}
 cd 'confd-%{version}'
+pwd
 cp %{_sourcedir}/confd-%{version}-linux-amd64 .
 /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
-cp confd %{buildroot}/%{_bindir}
+cp %{SOURCE0} %{buildroot}/%{_bindir}/%{name}
 mkdir -p %{buildroot}/%{_sysconfdir}/%{name}
 mkdir -p %{buildroot}/%{_sysconfdir}/sysconfig
 cp %{SOURCE1} %{buildroot}/%{_sysconfdir}/sysconfig/%{name}
@@ -70,7 +72,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%{_sysconfdir}/%{name}.d
+%{_sysconfdir}/%{name}
 %{_sysconfdir}/sysconfig/%{name}
 %{_sharedstatedir}/%{name}
 %if 0%{?fedora} >= 14 || 0%{?rhel} >= 7
@@ -85,5 +87,7 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Dev 6 2018 Jean-Sébastien Frerot <jean-sebastien@frerot.me>
+- Fix Non working part of the spec file
 * Fri Jan 16 2015 Michael Chapman <michchcap@cisco.com>
 - Initial
