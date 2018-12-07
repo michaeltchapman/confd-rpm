@@ -1,6 +1,6 @@
 Name:           confd
-Version:        0.7.1
-Release:        1%{?dist}
+Version:        0.16.0
+Release:        2%{?dist}
 Summary:        Manage local application configuration files using templates and data from etcd or consul
 
 Group:          System Environment/Daemons
@@ -21,17 +21,21 @@ Requires:       systemd
 Manage local application configuration files using templates and data from etcd or consul
 
 %prep
+mkdir -p %{buildroot}
 cd %{buildroot}
 rm -rf 'confd-%{version}'
 /usr/bin/mkdir -p confd-%{version}
 cd 'confd-%{version}'
+pwd
 cp %{_sourcedir}/confd-%{version}-linux-amd64 .
 /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
 
 %install
 mkdir -p %{buildroot}/%{_bindir}
-cp confd %{buildroot}/%{_bindir}
+cp %{SOURCE0} %{buildroot}/%{_bindir}/%{name}
 mkdir -p %{buildroot}/%{_sysconfdir}/%{name}
+mkdir -p %{buildroot}/%{_sysconfdir}/%{name}/conf.d
+mkdir -p %{buildroot}/%{_sysconfdir}/%{name}/templates
 mkdir -p %{buildroot}/%{_sysconfdir}/sysconfig
 cp %{SOURCE1} %{buildroot}/%{_sysconfdir}/sysconfig/%{name}
 mkdir -p %{buildroot}/%{_sharedstatedir}/%{name}
@@ -70,7 +74,9 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%{_sysconfdir}/%{name}.d
+%{_sysconfdir}/%{name}
+%{_sysconfdir}/%{name}/conf.d
+%{_sysconfdir}/%{name}/templates
 %{_sysconfdir}/sysconfig/%{name}
 %{_sharedstatedir}/%{name}
 %if 0%{?fedora} >= 14 || 0%{?rhel} >= 7
@@ -85,5 +91,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Dec 6 2018 Jean-Sébastien Frerot <jean-sebastien@frerot.me>
+- Create and use conf.d by default in /etc/confd
+- Add templates folder in /etc/confd/
+* Thu Dec 5 2018 Jean-Sébastien Frerot <jean-sebastien@frerot.me>
+- Fix Non working part of the spec file
 * Fri Jan 16 2015 Michael Chapman <michchcap@cisco.com>
 - Initial
